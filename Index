@@ -1,0 +1,754 @@
+<div>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f7fb;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .chat-wrapper {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+
+  .access-bar {
+    background: #fff3e0;
+    border: 1.5px solid #ffe0b2;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .access-input {
+    flex: 1;
+    min-width: 220px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #e0e0e0;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .access-input:focus {
+    border-color: #e65100;
+  }
+
+  .access-btn {
+    padding: 12px 20px;
+    background: #e65100;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .chat-header {
+    text-align: center;
+    margin-bottom: 26px;
+  }
+
+  .chat-header h1 {
+    font-size: 34px;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+
+  .chat-header p {
+    color: #666;
+    font-size: 15px;
+  }
+
+  .suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .suggestion-chip {
+    background: white;
+    border: 1.5px solid #e0e0f0;
+    border-radius: 20px;
+    padding: 9px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #444;
+  }
+
+  .suggestion-chip:hover {
+    background: #1a1a2e;
+    color: white;
+    border-color: #1a1a2e;
+    transform: translateY(-1px);
+  }
+
+  .chat-box {
+    background: white;
+    border-radius: 22px;
+    border: 1px solid #ececec;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  }
+
+  .messages {
+    height: 520px;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #fafafa;
+  }
+
+  .messages::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .messages::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 999px;
+  }
+
+  .msg-user {
+    align-self: flex-end;
+    background: #1a1a2e;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 78%;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .msg-ai {
+    align-self: flex-start;
+    background: white;
+    color: #333;
+    border: 1px solid #e9e9e9;
+    padding: 15px 18px;
+    border-radius: 18px 18px 18px 4px;
+    max-width: 85%;
+    font-size: 14px;
+    line-height: 1.7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+
+  .typing-indicator {
+    align-self: flex-start;
+    background: white;
+    border: 1px solid #e9e9e9;
+    border-radius: 18px 18px 18px 4px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .typing-dot {
+    width: 7px;
+    height: 7px;
+    background: #bbb;
+    border-radius: 50%;
+    animation: bounce 1s infinite;
+  }
+
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.7); }
+    40% { transform: scale(1); }
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    padding: 16px;
+    border-top: 1px solid #ececec;
+    background: white;
+  }
+
+  .chat-input {
+    flex: 1;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e0e0e0;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .chat-input:focus {
+    border-color: #1a1a2e;
+  }
+
+  .send-btn {
+    padding: 14px 24px;
+    background: #1a1a2e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .cards-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .candidate-card {
+    width: 250px;
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid #ececec;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+  }
+
+  .candidate-card:hover {
+    transform: translateY(-3px);
+    border-color: #1a1a2e;
+  }
+
+  .free-badge,
+  .pro-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+
+  .free-badge {
+    background: #fff3e0;
+    color: #e65100;
+  }
+
+  .pro-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .card-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+  }
+
+  .card-role {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+
+  .card-score {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .card-detail {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+  }
+
+  .card-skills {
+    background: #f6f6f6;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 11px;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 10px;
+    margin-bottom: 12px;
+  }
+
+  .unlock-btn {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 11px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #1a1a2e;
+    color: white;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin-top: 16px;
+  }
+
+  .payment-section {
+    background: white;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 24px;
+    text-align: center;
+    transition: border 0.3s;
+    display: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  }
+
+  .payment-section.visible {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .candidate-card {
+      width: 100%;
+    }
+
+    .input-row {
+      flex-direction: column;
+    }
+
+    .send-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="chat-wrapper">
+
+  <div class="access-bar">
+    <input
+      id="phone-input"
+      class="access-input"
+      type="text"
+      placeholder="Enter your WhatsApp number to check access..."
+    />
+
+    <button class="access-btn" onclick="checkAccess()">
+      Check Access
+    </button>
+
+    <span id="access-badge" style="font-size:13px;font-weight:700;"></span>
+  </div>
+
+  <div class="chat-header">
+    <h1>PropTalent AI Search</h1>
+    <p>Search verified real estate talent across India using AI.</p>
+  </div>
+
+  <div class="suggestions">
+    <div class="suggestion-chip" onclick="fillChat('Find Sales Executives in Delhi with 3+ years')">
+      Sales Exec Delhi
+    </div>
+
+    <div class="suggestion-chip" onclick="fillChat('Presales executives in Gurgaon under 5 LPA')">
+      Presales Gurgaon
+    </div>
+
+    <div class="suggestion-chip" onclick="fillChat('CRM managers in Noida with 2-4 years experience')">
+      CRM Noida
+    </div>
+
+    <div class="suggestion-chip" onclick="fillChat('Channel Partner Managers in Mumbai')">
+      CP Mumbai
+    </div>
+
+    <div class="suggestion-chip" onclick="fillChat('Site Sales Head with team management experience')">
+      Sales Head
+    </div>
+  </div>
+
+  <div class="chat-box">
+
+    <div class="messages" id="messages">
+      <div class="msg-ai">
+        👋 Hello! I'm PropTalent AI.<br><br>
+
+        I help recruiters find verified real estate professionals across India using AI-powered search.<br><br>
+
+        Try:
+        <em>"Find Sales Executives in Delhi with 3+ years"</em>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <input
+        class="chat-input"
+        id="chat-input"
+        type="text"
+        placeholder="Search candidates..."
+      />
+
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        Send
+      </button>
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    🔒 Contact details locked for free users · Subscribe to unlock
+  </div>
+
+  <div id="payment-section" class="payment-section">
+
+    <div style="font-size:20px;font-weight:700;color:#1a1a2e;margin-bottom:8px;">
+      Unlock Full Candidate Profiles
+    </div>
+
+    <div style="color:#666;font-size:14px;margin-bottom:6px;">
+      One-time payment · Instant access · Valid 30 days
+    </div>
+
+    <div style="font-size:32px;font-weight:800;color:#1a1a2e;margin:16px 0;">
+      ₹999
+    </div>
+
+    <div style="
+      background:#f8f9fa;
+      border-radius:12px;
+      padding:14px;
+      margin-bottom:20px;
+      text-align:left;
+      font-size:13px;
+      color:#555;
+      line-height:2;
+    ">
+      ✅ Full names visible<br>
+      ✅ Phone numbers unlocked<br>
+      ✅ Email addresses shown<br>
+      ✅ CV download access<br>
+      ✅ Unlimited searches for 30 days
+    </div>
+
+    <a
+      href="https://rzp.io/rzp/AdlBSpws"
+      target="_blank"
+      style="
+        display:inline-block;
+        background:#1a1a2e;
+        color:white;
+        padding:14px 24px;
+        border-radius:12px;
+        text-decoration:none;
+        font-weight:700;
+      "
+    >
+      Pay ₹999 Securely
+    </a>
+
+    <div style="font-size:11px;color:#aaa;margin-top:12px;">
+      Secured by Razorpay · GST invoice available
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const WEBHOOK_RAW =
+    'https://n8n-production-1ddf.up.railway.app/webhook/chat-search';
+
+  const CHECK_RAW =
+    'https://n8n-production-1ddf.up.railway.app/webhook/check-access';
+
+  const PROXY = 'https://corsproxy.io/?';
+
+  let IS_SUBSCRIBED = false;
+
+  async function checkAccess() {
+
+    const phone = document
+      .getElementById('phone-input')
+      .value
+      .trim()
+      .replace(/\D/g, '')
+      .slice(-10);
+
+    if (!phone || phone.length < 10) {
+      alert('Please enter a valid 10-digit phone number');
+      return;
+    }
+
+    const badge = document.getElementById('access-badge');
+
+    badge.textContent = 'Checking...';
+
+    try {
+
+      const res = await fetch(
+        PROXY + encodeURIComponent(CHECK_RAW),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ phone })
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.is_subscribed) {
+
+        IS_SUBSCRIBED = true;
+
+        badge.textContent = '✅ Pro Access Active';
+        badge.style.color = '#2e7d32';
+
+        document
+          .getElementById('payment-section')
+          .classList.remove('visible');
+
+      } else {
+
+        IS_SUBSCRIBED = false;
+
+        badge.textContent = '🔒 Free Access';
+        badge.style.color = '#e65100';
+      }
+
+    } catch (e) {
+
+      badge.textContent = 'Error checking';
+      badge.style.color = '#c62828';
+
+      console.error(e);
+    }
+  }
+
+  function showPayment() {
+
+    const section = document.getElementById('payment-section');
+
+    section.classList.add('visible');
+
+    section.scrollIntoView({
+      behavior: 'smooth'
+    });
+
+    section.style.border = '2px solid #e65100';
+  }
+
+  function fillChat(text) {
+
+    document.getElementById('chat-input').value = text;
+
+    sendMessage();
+  }
+
+  async function sendMessage() {
+
+    const input = document.getElementById('chat-input');
+
+    const btn = document.getElementById('send-btn');
+
+    const messages = document.getElementById('messages');
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    btn.disabled = true;
+
+    input.value = '';
+
+    messages.innerHTML += `
+      <div class="msg-user">${text}</div>
+    `;
+
+    const typingEl = document.createElement('div');
+
+    typingEl.className = 'typing-indicator';
+
+    typingEl.id = 'typing';
+
+    typingEl.innerHTML = `
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    `;
+
+    messages.appendChild(typingEl);
+
+    messages.scrollTop = messages.scrollHeight;
+
+    try {
+
+      const res = await fetch(
+        PROXY + encodeURIComponent(WEBHOOK_RAW),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: text,
+            is_subscribed: IS_SUBSCRIBED
+          })
+        }
+      );
+
+      const data = await res.json();
+
+      document.getElementById('typing')?.remove();
+
+      messages.innerHTML += `
+        <div class="msg-ai">
+          ${data.reply || 'Here are your results'}
+        </div>
+      `;
+
+      if (data.candidates && data.candidates.length > 0) {
+
+        let cardsHTML = '<div class="cards-grid">';
+
+        data.candidates.forEach(c => {
+
+          const name = IS_SUBSCRIBED
+            ? (c.Full_Name || 'Candidate')
+            : (c.Masked_Name || 'Candidate');
+
+          cardsHTML += `
+            <div class="candidate-card">
+
+              <div class="${IS_SUBSCRIBED ? 'pro-badge' : 'free-badge'}">
+                ${IS_SUBSCRIBED ? '✅ Pro View' : 'Free Preview'}
+              </div>
+
+              <div class="card-name">
+                ${name}
+              </div>
+
+              <div class="card-role">
+                ${c.Current_Role || ''} · ${c.City || ''}
+              </div>
+
+              <div class="card-score">
+                ${c.AI_Score || '—'} AI Score
+              </div>
+
+              <div class="card-detail">
+                📅 ${c.Total_Exp_Years || '—'} yrs exp
+              </div>
+
+              <div class="card-detail">
+                💰 ₹${c.Expected_Salary_LPA || '—'} LPA expected
+              </div>
+
+              <div class="card-detail">
+                ⏱ ${c.Notice_Period_Days || '—'} days notice
+              </div>
+
+              ${
+                IS_SUBSCRIBED
+                  ? `
+                    <div class="card-detail">
+                      📞 ${c.Phone || '—'}
+                    </div>
+
+                    <div class="card-detail">
+                      📧 ${c.Email || '—'}
+                    </div>
+                  `
+                  : ''
+              }
+
+              <div class="card-skills">
+                ${c.Skills || ''}
+              </div>
+
+              <button
+                class="unlock-btn"
+                onclick="${
+                  IS_SUBSCRIBED
+                    ? ''
+                    : 'showPayment()'
+                }"
+              >
+                ${
+                  IS_SUBSCRIBED
+                    ? '📋 Full Profile Unlocked'
+                    : '💳 Unlock — ₹999 ↓'
+                }
+              </button>
+
+            </div>
+          `;
+        });
+
+        cardsHTML += '</div>';
+
+        messages.innerHTML += cardsHTML;
+      }
+
+      messages.scrollTop = messages.scrollHeight;
+
+    } catch (err) {
+
+      document.getElementById('typing')?.remove();
+
+      messages.innerHTML += `
+        <div class="msg-ai" style="color:#c62828;">
+          Something went wrong. Please try again.
+        </div>
+      `;
+
+      console.error(err);
+    }
+
+    btn.disabled = false;
+
+    input.focus();
+  }
+
+  document
+    .getElementById('chat-input')
+    .addEventListener('keydown', e => {
+
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+
+    });
+</script>
+
+</div>
