@@ -1,1 +1,1 @@
-It’s a recruitment helper tool. Recruiters or hiring managers tell the app what kind of person they’re looking for — like the job role, city, years of experience, or salary range. The app then looks through a list of candidates, filters out the ones who don’t fit, and sorts the rest by how well they match. Finally, it sends back a neat list of the top candidates with their details, ready for the recruiter to review.
+
