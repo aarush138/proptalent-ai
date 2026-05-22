@@ -500,10 +500,9 @@
 
   <script>
     
-  const WEBHOOK_RAW = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/chat-search';
-  const CHECK_RAW = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/check-access';
-
-    const PROXY = 'https://corsproxy.io/?';
+ const WEBHOOK_RAW = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/chat-search';
+const CHECK_RAW = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/check-access';
+const PROXY = 'https://api.allorigins.win/raw?url=';
 
     let IS_SUBSCRIBED = false;
 
@@ -525,17 +524,14 @@
       badge.textContent = 'Checking...';
 
       try {
-        const res = await fetch(
-          PROXY + encodeURIComponent(CHECK_RAW),
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ phone })
-          }
-        );
-
+       const res = await fetch(CHECK_RAW, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true'
+  },
+  body: JSON.stringify({ phone })
+});
         const data = await res.json();
 
         if (data.is_subscribed) {
