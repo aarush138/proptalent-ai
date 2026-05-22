@@ -524,13 +524,16 @@ const PROXY = 'https://api.allorigins.win/raw?url=';
       badge.textContent = 'Checking...';
 
       try {
-       const res = await fetch(CHECK_RAW, {
+    const res = await fetch(WEBHOOK_RAW, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': 'true'
   },
-  body: JSON.stringify({ phone })
+  body: JSON.stringify({
+    message: text,
+    is_subscribed: IS_SUBSCRIBED
+  })
 });
         const data = await res.json();
 
