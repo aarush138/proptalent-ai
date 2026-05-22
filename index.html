@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>PropTalent AI Search</title>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -124,15 +132,6 @@
       background: #fafafa;
     }
 
-    .messages::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .messages::-webkit-scrollbar-thumb {
-      background: #ddd;
-      border-radius: 999px;
-    }
-
     .msg-user {
       align-self: flex-end;
       background: #1a1a2e;
@@ -185,6 +184,7 @@
     }
 
     @keyframes bounce {
+
       0%,
       80%,
       100% {
@@ -212,10 +212,6 @@
       font-size: 14px;
       outline: none;
       font-family: inherit;
-    }
-
-    .chat-input:focus {
-      border-color: #1a1a2e;
     }
 
     .send-btn {
@@ -249,12 +245,6 @@
       padding: 18px;
       border: 1px solid #ececec;
       box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s;
-    }
-
-    .candidate-card:hover {
-      transform: translateY(-3px);
-      border-color: #1a1a2e;
     }
 
     .free-badge,
@@ -344,7 +334,6 @@
       padding: 28px;
       margin-top: 24px;
       text-align: center;
-      transition: border 0.3s;
       display: none;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
     }
@@ -354,6 +343,7 @@
     }
 
     @media (max-width: 768px) {
+
       .candidate-card {
         width: 100%;
       }
@@ -366,13 +356,17 @@
         width: 100%;
       }
     }
+
   </style>
+
 </head>
 
 <body>
+
   <div class="chat-wrapper">
 
     <div class="access-bar">
+
       <input
         id="phone-input"
         class="access-input"
@@ -380,53 +374,50 @@
         placeholder="Enter your WhatsApp number to check access..."
       />
 
-      <button class="access-btn" onclick="checkAccess()">
+      <button
+        class="access-btn"
+        onclick="checkAccess()"
+      >
         Check Access
       </button>
 
-      <span id="access-badge" style="font-size:13px;font-weight:700;"></span>
+      <span
+        id="access-badge"
+        style="font-size:13px;font-weight:700;"
+      ></span>
+
     </div>
 
     <div class="chat-header">
+
       <h1>PropTalent AI Search</h1>
-      <p>Search verified real estate talent across India using AI.</p>
-    </div>
 
-    <div class="suggestions">
-      <div class="suggestion-chip" onclick="fillChat('Find Sales Executives in Delhi with 3 plus years')">
-        Sales Exec Delhi
-      </div>
+      <p>
+        Search verified real estate talent across India using AI.
+      </p>
 
-      <div class="suggestion-chip" onclick="fillChat('Presales executives in Gurgaon under 5 LPA')">
-        Presales Gurgaon
-      </div>
-
-      <div class="suggestion-chip" onclick="fillChat('CRM managers in Noida with 2-4 years experience')">
-        CRM Noida
-      </div>
-
-      <div class="suggestion-chip" onclick="fillChat('Channel Partner Managers in Mumbai')">
-        CP Mumbai
-      </div>
-
-      <div class="suggestion-chip" onclick="fillChat('Site Sales Head with team management experience')">
-        Sales Head
-      </div>
     </div>
 
     <div class="chat-box">
-      <div class="messages" id="messages">
-        <div class="msg-ai">
-          👋 Hello! I'm PropTalent AI.<br /><br />
 
-          I help recruiters find verified real estate professionals across India using AI-powered search.<br /><br />
+      <div
+        class="messages"
+        id="messages"
+      >
+
+        <div class="msg-ai">
+
+          👋 Hello! I'm PropTalent AI.<br /><br />
 
           Try:
           <em>"Find Sales Executives in Delhi with 3+ years"</em>
+
         </div>
+
       </div>
 
       <div class="input-row">
+
         <input
           class="chat-input"
           id="chat-input"
@@ -434,46 +425,35 @@
           placeholder="Search candidates..."
         />
 
-        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <button
+          class="send-btn"
+          id="send-btn"
+          onclick="sendMessage()"
+        >
           Send
         </button>
+
       </div>
+
     </div>
 
     <div class="footer-note">
+
       🔒 Contact details locked for free users · Subscribe to unlock
+
     </div>
 
-    <div id="payment-section" class="payment-section">
-      <div style="font-size:20px;font-weight:700;color:#1a1a2e;margin-bottom:8px;">
+    <div
+      id="payment-section"
+      class="payment-section"
+    >
+
+      <div style="font-size:20px;font-weight:700;margin-bottom:10px;">
         Unlock Full Candidate Profiles
       </div>
 
-      <div style="color:#666;font-size:14px;margin-bottom:6px;">
-        One-time payment · Instant access · Valid 30 days
-      </div>
-
-      <div style="font-size:32px;font-weight:800;color:#1a1a2e;margin:16px 0;">
+      <div style="font-size:32px;font-weight:800;margin:16px 0;">
         ₹999
-      </div>
-
-      <div
-        style="
-          background:#f8f9fa;
-          border-radius:12px;
-          padding:14px;
-          margin-bottom:20px;
-          text-align:left;
-          font-size:13px;
-          color:#555;
-          line-height:2;
-        "
-      >
-        ✅ Full names visible<br />
-        ✅ Phone numbers unlocked<br />
-        ✅ Email addresses shown<br />
-        ✅ CV download access<br />
-        ✅ Unlimited searches for 30 days
       </div>
 
       <a
@@ -492,21 +472,22 @@
         Pay ₹999 Securely
       </a>
 
-      <div style="font-size:11px;color:#aaa;margin-top:12px;">
-        Secured by Razorpay · GST invoice available
-      </div>
     </div>
+
   </div>
 
   <script>
-    
- const WEBHOOK_RAW = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/chat-search';
-const CHECK_RAW = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/check-access';
-const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    const WEBHOOK_RAW =
+      'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/chat-search';
+
+    const CHECK_RAW =
+      'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/check-access';
 
     let IS_SUBSCRIBED = false;
 
     async function checkAccess() {
+
       const phone = document
         .getElementById('phone-input')
         .value
@@ -515,72 +496,88 @@ const PROXY = 'https://api.allorigins.win/raw?url=';
         .slice(-10);
 
       if (!phone || phone.length < 10) {
-        alert('Please enter a valid 10-digit phone number');
+        alert('Please enter valid 10 digit phone');
         return;
       }
 
-      const badge = document.getElementById('access-badge');
+      const badge =
+        document.getElementById('access-badge');
 
       badge.textContent = 'Checking...';
 
       try {
-    const res = await fetch(WEBHOOK_RAW, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'ngrok-skip-browser-warning': 'true'
-  },
-  body: JSON.stringify({
-    message: text,
-    is_subscribed: IS_SUBSCRIBED
-  })
-});
+
+        const res = await fetch(CHECK_RAW, {
+          method: 'POST',
+
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          },
+
+          body: JSON.stringify({
+            phone: phone
+          })
+        });
+
         const data = await res.json();
 
         if (data.is_subscribed) {
+
           IS_SUBSCRIBED = true;
 
-          badge.textContent = '✅ Pro Access Active';
+          badge.textContent =
+            '✅ Pro Access Active';
+
           badge.style.color = '#2e7d32';
 
           document
             .getElementById('payment-section')
             .classList.remove('visible');
+
         } else {
+
           IS_SUBSCRIBED = false;
 
-          badge.textContent = '🔒 Free Access';
+          badge.textContent =
+            '🔒 Free Access';
+
           badge.style.color = '#e65100';
         }
-      } catch (e) {
-        badge.textContent = 'Error checking';
+
+      } catch (err) {
+
+        badge.textContent =
+          '❌ Error checking access';
+
         badge.style.color = '#c62828';
 
-        console.error(e);
+        console.error(err);
       }
     }
 
     function showPayment() {
-      const section = document.getElementById('payment-section');
+
+      const section =
+        document.getElementById('payment-section');
 
       section.classList.add('visible');
 
       section.scrollIntoView({
         behavior: 'smooth'
       });
-
-      section.style.border = '2px solid #e65100';
-    }
-
-    function fillChat(text) {
-      document.getElementById('chat-input').value = text;
-      sendMessage();
     }
 
     async function sendMessage() {
-      const input = document.getElementById('chat-input');
-      const btn = document.getElementById('send-btn');
-      const messages = document.getElementById('messages');
+
+      const input =
+        document.getElementById('chat-input');
+
+      const btn =
+        document.getElementById('send-btn');
+
+      const messages =
+        document.getElementById('messages');
 
       const text = input.value.trim();
 
@@ -594,9 +591,12 @@ const PROXY = 'https://api.allorigins.win/raw?url=';
         <div class="msg-user">${text}</div>
       `;
 
-      const typingEl = document.createElement('div');
+      const typingEl =
+        document.createElement('div');
 
-      typingEl.className = 'typing-indicator';
+      typingEl.className =
+        'typing-indicator';
+
       typingEl.id = 'typing';
 
       typingEl.innerHTML = `
@@ -606,103 +606,128 @@ const PROXY = 'https://api.allorigins.win/raw?url=';
       `;
 
       messages.appendChild(typingEl);
-      messages.scrollTop = messages.scrollHeight;
+
+      messages.scrollTop =
+        messages.scrollHeight;
 
       try {
-        const res = await fetch(
-          PROXY + encodeURIComponent(WEBHOOK_RAW),
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: text,
-              is_subscribed: IS_SUBSCRIBED
-            })
-          }
-        );
+
+        const res = await fetch(WEBHOOK_RAW, {
+
+          method: 'POST',
+
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          },
+
+          body: JSON.stringify({
+            message: text,
+            is_subscribed: IS_SUBSCRIBED
+          })
+
+        });
 
         const data = await res.json();
 
-        document.getElementById('typing')?.remove();
+        document
+          .getElementById('typing')
+          ?.remove();
 
         messages.innerHTML += `
           <div class="msg-ai">
-            ${data.reply || 'Here are your results'}
+            ${data.reply || 'Results loaded'}
           </div>
         `;
 
-        if (data.candidates && data.candidates.length > 0) {
-          let cardsHTML = '<div class="cards-grid">';
+        if (
+          data.candidates &&
+          data.candidates.length > 0
+        ) {
+
+          let cardsHTML =
+            '<div class="cards-grid">';
 
           data.candidates.forEach((c) => {
-            const name = IS_SUBSCRIBED
+
+            const name =
+              IS_SUBSCRIBED
               ? (c.Full_Name || 'Candidate')
               : (c.Masked_Name || 'Candidate');
 
             cardsHTML += `
+
               <div class="candidate-card">
 
                 <div class="${IS_SUBSCRIBED ? 'pro-badge' : 'free-badge'}">
-                  ${IS_SUBSCRIBED ? '✅ Pro View' : 'Free Preview'}
+
+                  ${IS_SUBSCRIBED
+                    ? '✅ Pro View'
+                    : 'Free Preview'}
+
                 </div>
 
                 <div class="card-name">
+
                   ${name}
+
                 </div>
 
                 <div class="card-role">
-                  ${c.Current_Role || ''} · ${c.City || ''}
-                </div>
 
-                <div class="card-score">
-                  ${c.AI_Score || '—'} AI Score
-                </div>
+                  ${c.Current_Role || ''}
 
-                <div class="card-detail">
-                  📅 ${c.Total_Exp_Years || '—'} yrs exp
                 </div>
 
                 <div class="card-detail">
-                  💰 ₹${c.Expected_Salary_LPA || '—'} LPA expected
+
+                  📍 ${c.City || ''}
+
                 </div>
 
                 <div class="card-detail">
-                  ⏱ ${c.Notice_Period_Days || '—'} days notice
+
+                  📅 ${c.Total_Exp_Years || '—'} years
+
+                </div>
+
+                <div class="card-detail">
+
+                  💰 ₹${c.Expected_Salary_LPA || '—'} LPA
+
                 </div>
 
                 ${
                   IS_SUBSCRIBED
-                    ? `
-                      <div class="card-detail">
-                        📞 ${c.Phone || '—'}
-                      </div>
+                  ? `
+                    <div class="card-detail">
+                      📞 ${c.Phone || '—'}
+                    </div>
 
-                      <div class="card-detail">
-                        📧 ${c.Email || '—'}
-                      </div>
-                    `
-                    : ''
+                    <div class="card-detail">
+                      📧 ${c.Email || '—'}
+                    </div>
+                  `
+                  : ''
                 }
 
                 <div class="card-skills">
+
                   ${c.Skills || ''}
+
                 </div>
 
                 <button
                   class="unlock-btn"
-                  onclick="${
-                    IS_SUBSCRIBED
-                      ? ''
-                      : 'showPayment()'
-                  }"
+                  onclick="${IS_SUBSCRIBED ? 'return false' : 'showPayment()'}"
                 >
+
                   ${
                     IS_SUBSCRIBED
-                      ? '📋 Full Profile Unlocked'
-                      : '💳 Unlock — ₹999 ↓'
+                    ? '📋 Full Profile'
+                    : '💳 Unlock ₹999'
                   }
+
                 </button>
 
               </div>
@@ -714,13 +739,18 @@ const PROXY = 'https://api.allorigins.win/raw?url=';
           messages.innerHTML += cardsHTML;
         }
 
-        messages.scrollTop = messages.scrollHeight;
+        messages.scrollTop =
+          messages.scrollHeight;
+
       } catch (err) {
-        document.getElementById('typing')?.remove();
+
+        document
+          .getElementById('typing')
+          ?.remove();
 
         messages.innerHTML += `
-          <div class="msg-ai" style="color:#c62828;">
-            Something went wrong. Please try again.
+          <div class="msg-ai" style="color:red;">
+            Something went wrong.
           </div>
         `;
 
@@ -728,16 +758,21 @@ const PROXY = 'https://api.allorigins.win/raw?url=';
       }
 
       btn.disabled = false;
+
       input.focus();
     }
 
     document
       .getElementById('chat-input')
       .addEventListener('keydown', (e) => {
+
         if (e.key === 'Enter') {
           sendMessage();
         }
       });
+
   </script>
+
 </body>
+
 </html>
