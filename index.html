@@ -1,24 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PropTalent AI Search</title>
-
   <style>
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: #f5f7fb;
@@ -41,7 +28,7 @@
       gap: 12px;
       align-items: center;
       flex-wrap: wrap;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
     }
 
     .access-input {
@@ -119,7 +106,7 @@
       border-radius: 22px;
       border: 1px solid #ececec;
       overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .messages {
@@ -130,6 +117,15 @@
       flex-direction: column;
       gap: 14px;
       background: #fafafa;
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 999px;
     }
 
     .msg-user {
@@ -153,7 +149,7 @@
       max-width: 85%;
       font-size: 14px;
       line-height: 1.7;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
 
     .typing-indicator {
@@ -175,25 +171,12 @@
       animation: bounce 1s infinite;
     }
 
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.3s;
-    }
+    .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.3s; }
 
     @keyframes bounce {
-
-      0%,
-      80%,
-      100% {
-        transform: scale(0.7);
-      }
-
-      40% {
-        transform: scale(1);
-      }
+      0%, 80%, 100% { transform: scale(0.7); }
+      40% { transform: scale(1); }
     }
 
     .input-row {
@@ -212,6 +195,10 @@
       font-size: 14px;
       outline: none;
       font-family: inherit;
+    }
+
+    .chat-input:focus {
+      border-color: #1a1a2e;
     }
 
     .send-btn {
@@ -244,11 +231,16 @@
       border-radius: 18px;
       padding: 18px;
       border: 1px solid #ececec;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+      transition: all 0.2s;
     }
 
-    .free-badge,
-    .pro-badge {
+    .candidate-card:hover {
+      transform: translateY(-3px);
+      border-color: #1a1a2e;
+    }
+
+    .free-badge, .pro-badge {
       display: inline-block;
       font-size: 11px;
       font-weight: 700;
@@ -334,8 +326,9 @@
       padding: 28px;
       margin-top: 24px;
       text-align: center;
+      transition: border 0.3s;
       display: none;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .payment-section.visible {
@@ -343,436 +336,240 @@
     }
 
     @media (max-width: 768px) {
-
-      .candidate-card {
-        width: 100%;
-      }
-
-      .input-row {
-        flex-direction: column;
-      }
-
-      .send-btn {
-        width: 100%;
-      }
+      .candidate-card { width: 100%; }
+      .input-row { flex-direction: column; }
+      .send-btn { width: 100%; }
     }
-
   </style>
-
 </head>
-
 <body>
 
-  <div class="chat-wrapper">
+<div class="chat-wrapper">
 
-    <div class="access-bar">
-
-      <input
-        id="phone-input"
-        class="access-input"
-        type="text"
-        placeholder="Enter your WhatsApp number to check access..."
-      />
-
-      <button
-        class="access-btn"
-        onclick="checkAccess()"
-      >
-        Check Access
-      </button>
-
-      <span
-        id="access-badge"
-        style="font-size:13px;font-weight:700;"
-      ></span>
-
-    </div>
-
-    <div class="chat-header">
-
-      <h1>PropTalent AI Search</h1>
-
-      <p>
-        Search verified real estate talent across India using AI.
-      </p>
-
-    </div>
-
-    <div class="chat-box">
-
-      <div
-        class="messages"
-        id="messages"
-      >
-
-        <div class="msg-ai">
-
-          👋 Hello! I'm PropTalent AI.<br /><br />
-
-          Try:
-          <em>"Find Sales Executives in Delhi with 3+ years"</em>
-
-        </div>
-
-      </div>
-
-      <div class="input-row">
-
-        <input
-          class="chat-input"
-          id="chat-input"
-          type="text"
-          placeholder="Search candidates..."
-        />
-
-        <button
-          class="send-btn"
-          id="send-btn"
-          onclick="sendMessage()"
-        >
-          Send
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="footer-note">
-
-      🔒 Contact details locked for free users · Subscribe to unlock
-
-    </div>
-
-    <div
-      id="payment-section"
-      class="payment-section"
-    >
-
-      <div style="font-size:20px;font-weight:700;margin-bottom:10px;">
-        Unlock Full Candidate Profiles
-      </div>
-
-      <div style="font-size:32px;font-weight:800;margin:16px 0;">
-        ₹999
-      </div>
-
-      <a
-        href="https://rzp.io/rzp/AdlBSpws"
-        target="_blank"
-        style="
-          display:inline-block;
-          background:#1a1a2e;
-          color:white;
-          padding:14px 24px;
-          border-radius:12px;
-          text-decoration:none;
-          font-weight:700;
-        "
-      >
-        Pay ₹999 Securely
-      </a>
-
-    </div>
-
+  <div class="access-bar">
+    <input
+      id="phone-input"
+      class="access-input"
+      type="text"
+      placeholder="Enter your WhatsApp number to check access..."
+    />
+    <button class="access-btn" onclick="checkAccess()">Check Access</button>
+    <span id="access-badge" style="font-size:13px;font-weight:700;"></span>
   </div>
 
-  <script>
+  <div class="chat-header">
+    <h1>PropTalent AI Search</h1>
+    <p>Search verified real estate talent across India using AI.</p>
+  </div>
 
-    const WEBHOOK_RAW =
-      'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/chat-search';
+  <div class="suggestions">
+    <div class="suggestion-chip" onclick="fillChat('Find Sales Executives in Delhi with 3 plus years')">Sales Exec Delhi</div>
+    <div class="suggestion-chip" onclick="fillChat('Presales executives in Gurgaon under 5 LPA')">Presales Gurgaon</div>
+    <div class="suggestion-chip" onclick="fillChat('CRM managers in Noida with 2-4 years experience')">CRM Noida</div>
+    <div class="suggestion-chip" onclick="fillChat('Channel Partner Managers in Mumbai')">CP Mumbai</div>
+    <div class="suggestion-chip" onclick="fillChat('Site Sales Head with team management experience')">Sales Head</div>
+  </div>
 
-    const CHECK_RAW =
-      'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/check-access';
+  <div class="chat-box">
+    <div class="messages" id="messages">
+      <div class="msg-ai">
+        👋 Hello! I'm PropTalent AI.<br><br>
+        I help recruiters find verified real estate professionals across India using AI-powered search.<br><br>
+        Try: <em>"Find Sales Executives in Delhi with 3+ years"</em>
+      </div>
+    </div>
+    <div class="input-row">
+      <input class="chat-input" id="chat-input" type="text" placeholder="Search candidates..." />
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 
-    let IS_SUBSCRIBED = false;
+  <div class="footer-note">
+    🔒 Contact details locked for free users · Subscribe to unlock
+  </div>
 
-    async function checkAccess() {
+  <div id="payment-section" class="payment-section">
+    <div style="font-size:20px;font-weight:700;color:#1a1a2e;margin-bottom:8px;">
+      Unlock Full Candidate Profiles
+    </div>
+    <div style="color:#666;font-size:14px;margin-bottom:6px;">
+      One-time payment · Instant access · Valid 30 days
+    </div>
+    <div style="font-size:32px;font-weight:800;color:#1a1a2e;margin:16px 0;">₹999</div>
+    <div style="background:#f8f9fa;border-radius:12px;padding:14px;margin-bottom:20px;text-align:left;font-size:13px;color:#555;line-height:2;">
+      ✅ Full names visible<br>
+      ✅ Phone numbers unlocked<br>
+      ✅ Email addresses shown<br>
+      ✅ CV download access<br>
+      ✅ Unlimited searches for 30 days
+    </div>
+    <a
+      href="https://rzp.io/rzp/AdlBSpws"
+      target="_blank"
+      style="display:inline-block;background:#1a1a2e;color:white;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:700;"
+    >
+      Pay ₹999 Securely
+    </a>
+    <div style="font-size:11px;color:#aaa;margin-top:12px;">
+      Secured by Razorpay · GST invoice available
+    </div>
+  </div>
 
-      const phone = document
-        .getElementById('phone-input')
-        .value
-        .trim()
-        .replace(/\D/g, '')
-        .slice(-10);
+</div>
 
-      if (!phone || phone.length < 10) {
-        alert('Please enter valid 10 digit phone');
-        return;
-      }
+<script>
+  const WEBHOOK_RAW = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/chat-search';
+  const CHECK_RAW   = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/check-access';
 
-      const badge =
-        document.getElementById('access-badge');
+  let IS_SUBSCRIBED = false;
 
-      badge.textContent = 'Checking...';
+  async function checkAccess() {
+    const phone = document.getElementById('phone-input').value.trim().replace(/\D/g, '').slice(-10);
 
-      try {
-
-        const res = await fetch(CHECK_RAW, {
-          method: 'POST',
-
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true'
-          },
-
-          body: JSON.stringify({
-            phone: phone
-          })
-        });
-
-        const data = await res.json();
-
-        if (data.is_subscribed) {
-
-          IS_SUBSCRIBED = true;
-
-          badge.textContent =
-            '✅ Pro Access Active';
-
-          badge.style.color = '#2e7d32';
-
-          document
-            .getElementById('payment-section')
-            .classList.remove('visible');
-
-        } else {
-
-          IS_SUBSCRIBED = false;
-
-          badge.textContent =
-            '🔒 Free Access';
-
-          badge.style.color = '#e65100';
-        }
-
-      } catch (err) {
-
-        badge.textContent =
-          '❌ Error checking access';
-
-        badge.style.color = '#c62828';
-
-        console.error(err);
-      }
+    if (!phone || phone.length < 10) {
+      alert('Please enter a valid 10-digit phone number');
+      return;
     }
 
-    function showPayment() {
+    const badge = document.getElementById('access-badge');
+    badge.textContent = 'Checking...';
 
-      const section =
-        document.getElementById('payment-section');
-
-      section.classList.add('visible');
-
-      section.scrollIntoView({
-        behavior: 'smooth'
+    try {
+      const res = await fetch(CHECK_RAW, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({ phone })
       });
+
+      const data = await res.json();
+
+      if (data.is_subscribed) {
+        IS_SUBSCRIBED = true;
+        badge.textContent = '✅ Pro Access Active';
+        badge.style.color = '#2e7d32';
+        document.getElementById('payment-section').classList.remove('visible');
+      } else {
+        IS_SUBSCRIBED = false;
+        badge.textContent = '🔒 Free Access';
+        badge.style.color = '#e65100';
+      }
+
+    } catch (e) {
+      badge.textContent = 'Error checking';
+      badge.style.color = '#c62828';
+      console.error(e);
     }
+  }
 
-    async function sendMessage() {
+  function showPayment() {
+    const section = document.getElementById('payment-section');
+    section.classList.add('visible');
+    section.scrollIntoView({ behavior: 'smooth' });
+    section.style.border = '2px solid #e65100';
+  }
 
-      const input =
-        document.getElementById('chat-input');
+  function fillChat(text) {
+    document.getElementById('chat-input').value = text;
+    sendMessage();
+  }
 
-      const btn =
-        document.getElementById('send-btn');
+  async function sendMessage() {
+    const input    = document.getElementById('chat-input');
+    const btn      = document.getElementById('send-btn');
+    const messages = document.getElementById('messages');
+    const text     = input.value.trim();
 
-      const messages =
-        document.getElementById('messages');
+    if (!text) return;
 
-      const text = input.value.trim();
+    btn.disabled = true;
+    input.value  = '';
 
-      if (!text) return;
+    messages.innerHTML += `<div class="msg-user">${text}</div>`;
 
-      btn.disabled = true;
+    const typingEl = document.createElement('div');
+    typingEl.className = 'typing-indicator';
+    typingEl.id = 'typing';
+    typingEl.innerHTML = `
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    `;
+    messages.appendChild(typingEl);
+    messages.scrollTop = messages.scrollHeight;
 
-      input.value = '';
+    try {
+      const res = await fetch(WEBHOOK_RAW, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({
+          message: text,
+          is_subscribed: IS_SUBSCRIBED
+        })
+      });
 
-      messages.innerHTML += `
-        <div class="msg-user">${text}</div>
-      `;
+      const data = await res.json();
 
-      const typingEl =
-        document.createElement('div');
+      document.getElementById('typing')?.remove();
 
-      typingEl.className =
-        'typing-indicator';
+      messages.innerHTML += `<div class="msg-ai">${data.reply || 'Here are your results'}</div>`;
 
-      typingEl.id = 'typing';
+      if (data.candidates && data.candidates.length > 0) {
+        let cardsHTML = '<div class="cards-grid">';
 
-      typingEl.innerHTML = `
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-      `;
+        data.candidates.forEach(c => {
+          const name = IS_SUBSCRIBED
+            ? (c.Full_Name || 'Candidate')
+            : (c.Masked_Name || 'Candidate');
 
-      messages.appendChild(typingEl);
-
-      messages.scrollTop =
-        messages.scrollHeight;
-
-      try {
-
-        const res = await fetch(WEBHOOK_RAW, {
-
-          method: 'POST',
-
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true'
-          },
-
-          body: JSON.stringify({
-            message: text,
-            is_subscribed: IS_SUBSCRIBED
-          })
-
-        });
-
-        const data = await res.json();
-
-        document
-          .getElementById('typing')
-          ?.remove();
-
-        messages.innerHTML += `
-          <div class="msg-ai">
-            ${data.reply || 'Results loaded'}
-          </div>
-        `;
-
-        if (
-          data.candidates &&
-          data.candidates.length > 0
-        ) {
-
-          let cardsHTML =
-            '<div class="cards-grid">';
-
-          data.candidates.forEach((c) => {
-
-            const name =
-              IS_SUBSCRIBED
-              ? (c.Full_Name || 'Candidate')
-              : (c.Masked_Name || 'Candidate');
-
-            cardsHTML += `
-
-              <div class="candidate-card">
-
-                <div class="${IS_SUBSCRIBED ? 'pro-badge' : 'free-badge'}">
-
-                  ${IS_SUBSCRIBED
-                    ? '✅ Pro View'
-                    : 'Free Preview'}
-
-                </div>
-
-                <div class="card-name">
-
-                  ${name}
-
-                </div>
-
-                <div class="card-role">
-
-                  ${c.Current_Role || ''}
-
-                </div>
-
-                <div class="card-detail">
-
-                  📍 ${c.City || ''}
-
-                </div>
-
-                <div class="card-detail">
-
-                  📅 ${c.Total_Exp_Years || '—'} years
-
-                </div>
-
-                <div class="card-detail">
-
-                  💰 ₹${c.Expected_Salary_LPA || '—'} LPA
-
-                </div>
-
-                ${
-                  IS_SUBSCRIBED
-                  ? `
-                    <div class="card-detail">
-                      📞 ${c.Phone || '—'}
-                    </div>
-
-                    <div class="card-detail">
-                      📧 ${c.Email || '—'}
-                    </div>
-                  `
-                  : ''
-                }
-
-                <div class="card-skills">
-
-                  ${c.Skills || ''}
-
-                </div>
-
-                <button
-                  class="unlock-btn"
-                  onclick="${IS_SUBSCRIBED ? 'return false' : 'showPayment()'}"
-                >
-
-                  ${
-                    IS_SUBSCRIBED
-                    ? '📋 Full Profile'
-                    : '💳 Unlock ₹999'
-                  }
-
-                </button>
-
+          cardsHTML += `
+            <div class="candidate-card">
+              <div class="${IS_SUBSCRIBED ? 'pro-badge' : 'free-badge'}">
+                ${IS_SUBSCRIBED ? '✅ Pro View' : 'Free Preview'}
               </div>
-            `;
-          });
+              <div class="card-name">${name}</div>
+              <div class="card-role">${c.Current_Role || ''} · ${c.City || ''}</div>
+              <div class="card-score">${c.AI_Score || '—'} AI Score</div>
+              <div class="card-detail">📅 ${c.Total_Exp_Years || '—'} yrs exp</div>
+              <div class="card-detail">💰 ₹${c.Expected_Salary_LPA || '—'} LPA expected</div>
+              <div class="card-detail">⏱ ${c.Notice_Period_Days || '—'} days notice</div>
+              ${IS_SUBSCRIBED ? `
+                <div class="card-detail">📞 ${c.Phone || '—'}</div>
+                <div class="card-detail">📧 ${c.Email || '—'}</div>
+              ` : ''}
+              <div class="card-skills">${c.Skills || ''}</div>
+              <button class="unlock-btn" onclick="${IS_SUBSCRIBED ? '' : 'showPayment()'}">
+                ${IS_SUBSCRIBED ? '📋 Full Profile Unlocked' : '💳 Unlock — ₹999 ↓'}
+              </button>
+            </div>
+          `;
+        });
 
-          cardsHTML += '</div>';
-
-          messages.innerHTML += cardsHTML;
-        }
-
-        messages.scrollTop =
-          messages.scrollHeight;
-
-      } catch (err) {
-
-        document
-          .getElementById('typing')
-          ?.remove();
-
-        messages.innerHTML += `
-          <div class="msg-ai" style="color:red;">
-            Something went wrong.
-          </div>
-        `;
-
-        console.error(err);
+        cardsHTML += '</div>';
+        messages.innerHTML += cardsHTML;
       }
 
-      btn.disabled = false;
+      messages.scrollTop = messages.scrollHeight;
 
-      input.focus();
+    } catch (err) {
+      document.getElementById('typing')?.remove();
+      messages.innerHTML += `<div class="msg-ai" style="color:#c62828;">Something went wrong. Please try again.</div>`;
+      console.error(err);
     }
 
-    document
-      .getElementById('chat-input')
-      .addEventListener('keydown', (e) => {
+    btn.disabled = false;
+    input.focus();
+  }
 
-        if (e.key === 'Enter') {
-          sendMessage();
-        }
-      });
-
-  </script>
+  document.getElementById('chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendMessage();
+  });
+</script>
 
 </body>
-
 </html>
