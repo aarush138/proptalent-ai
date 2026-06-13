@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PropTalent — Screening</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #f5f7fb;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 20px;
+  }
+  .wrap { max-width: 640px; margin: 30px auto; }
+  .card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #ececec;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  h1 { font-size: 24px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+  .sub { color: #666; font-size: 14px; margin-bottom: 20px; }
+  .q-num {
+    display: inline-block;
+    background: #fff3e0;
+    color: #e65100;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .q-text { font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; line-height: 1.5; }
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1.5px solid #e0e0e0;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    min-height: 70px;
+  }
+  textarea:focus { border-color: #1a1a2e; }
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: #1a1a2e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .loading, .error, .success {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 15px;
+    color: #666;
+  }
+  .success { color: #2e7d32; }
+  .error { color: #c62828; }
+  .timer-note {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .spinner {
+    border: 3px solid #eee;
+    border-top: 3px solid #1a1a2e;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app">
+  <div class="card">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Loading your screening questions...
+    </div>
+  </div>
+</div>
+
+<script>
+  const GET_QUESTIONS_URL = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/get-screening-questions';
+  const SUBMIT_URL = 'https://idealize-vendetta-pointer.ngrok-free.dev/webhook/submit-screening';
+
+  const params = new URLSearchParams(window.location.search);
+  const phone = (params.get('phone') || '').replace(/\D/g, '').slice(-10);
+
+  let startTime = Date.now();
+
+  async function init() {
+    const app = document.getElementById('app');
+
+    if (!phone || phone.length < 10) {
+      app.innerHTML = `<div class="card"><div class="error">Invalid link. Please use the link sent to your registered email.</div></div>`;
+      return;
+    }
+
+    try {
+      const res = await fetch(GET_QUESTIONS_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({ phone })
+      });
+
+      const data = await res.json();
+
+      if (!data.questions || data.questions.length === 0) {
+        if (data.already_screened) {
+          app.innerHTML = `<div class="card"><div class="success">✅ You've already completed this screening. Thank you!</div></div>`;
+        } else {
+          app.innerHTML = `<div class="card"><div class="error">${data.message || 'Could not load questions. Please contact PropTalent support.'}</div></div>`;
+        }
+        return;
+      }
+
+      renderForm(data);
+
+    } catch (e) {
+      app.innerHTML = `<div class="card"><div class="error">Connection error. Please try again or contact PropTalent support.</div></div>`;
+      console.error(e);
+    }
+  }
+
+  function renderForm(data) {
+    const app = document.getElementById('app');
+    const questions = data.questions;
+    const name = data.candidate_name || '';
+    const role = data.role || '';
+
+    let html = `
+      <div class="card">
+        <h1>Quick Screening — ${role}</h1>
+        <div class="sub">Hi ${name}! Please answer all 5 questions below with specific details and real numbers where possible. This takes about 5 minutes.</div>
+      </div>
+    `;
+
+    questions.forEach((q, i) => {
+      html += `
+        <div class="card">
+          <div class="q-num">Question ${i + 1} of 5</div>
+          <div class="q-text">${q}</div>
+          <textarea id="answer-${i}" placeholder="Type your answer here..."></textarea>
+        </div>
+      `;
+    });
+
+    html += `
+      <div class="card">
+        <button class="submit-btn" id="submit-btn" onclick="submitAnswers()">Submit Answers</button>
+        <div class="timer-note">Your responses are reviewed for accuracy and consistency.</div>
+      </div>
+    `;
+
+    app.innerHTML = html;
+    startTime = Date.now();
+  }
+
+  async function submitAnswers() {
+    const btn = document.getElementById('submit-btn');
+    const answers = [];
+
+    for (let i = 0; i < 5; i++) {
+      const el = document.getElementById(`answer-${i}`);
+      const val = el.value.trim();
+      if (!val) {
+        alert(`Please answer question ${i + 1} before submitting.`);
+        el.focus();
+        return;
+      }
+      answers.push(val);
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    const timeTakenSeconds = Math.round((Date.now() - startTime) / 1000);
+
+    try {
+      const res = await fetch(SUBMIT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({
+          phone,
+          answers,
+          time_taken_seconds: timeTakenSeconds
+        })
+      });
+
+      const data = await res.json();
+      const app = document.getElementById('app');
+
+      app.innerHTML = `
+        <div class="card">
+          <div class="success">
+            🎉 Thank you! Your screening is complete.<br><br>
+            Our team will review your profile and get back to you within 48 hours.
+          </div>
+        </div>
+      `;
+
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = 'Submit Answers';
+      alert('Something went wrong. Please try again.');
+      console.error(e);
+    }
+  }
+
+  init();
+</script>
+
+</body>
+</html>
